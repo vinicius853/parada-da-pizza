@@ -139,8 +139,8 @@
 
         <div class="frow">
           <div class="fgroup fgrow3">
-            <label>Rua</label>
-            <input type="text" id="fRua" placeholder="Rua..." readonly/>
+            <label>Rua *</label>
+            <input type="text" id="fRua" placeholder="Rua..."/>
           </div>
           <div class="fgroup">
             <label>Número *</label>
@@ -154,12 +154,12 @@
             <input type="text" id="fBairro" placeholder="Bairro" oninput="onBairroInput()"/>
           </div>
           <div class="fgroup fgrow2">
-            <label>Cidade</label>
-            <input type="text" id="fCidade" placeholder="Cidade" readonly/>
+            <label>Cidade *</label>
+            <input type="text" id="fCidade" placeholder="Cidade"/>
           </div>
           <div class="fgroup fsmall">
-            <label>UF</label>
-            <input type="text" id="fUF" placeholder="UF" readonly maxlength="2"/>
+            <label>UF *</label>
+            <input type="text" id="fUF" placeholder="UF" maxlength="2"/>
           </div>
         </div>
 
@@ -180,7 +180,7 @@
           <label class="pay-opt">
             <input type="radio" name="pagamento" value="cartao" onchange="onPagChange()"/>
             <span class="pay-ico">💳</span>
-            <div><strong>Cartão</strong><small>+R$ 1,00</small></div>
+            <div><strong>Cartão</strong><small>Sem taxa extra</small></div>
           </label>
 
           <label class="pay-opt">
@@ -217,7 +217,6 @@
       <div class="co-section totals-section" id="totaisBlock">
         <div class="total-row"><span>Subtotal</span><span id="ttSub">R$ 0,00</span></div>
         <div class="total-row" id="rowTaxaEntrega" style="display:none"><span>Taxa de entrega</span><span id="ttEntrega">R$ 0,00</span></div>
-        <div class="total-row" id="rowTaxaCartao" style="display:none"><span>Taxa cartão</span><span>R$ 1,00</span></div>
         <div class="total-row total-grand"><span>Total</span><span id="ttTotal">R$ 0,00</span></div>
       </div>
 

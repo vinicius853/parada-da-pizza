@@ -809,22 +809,40 @@ function maskCep(input) {
 }
 
 async function buscarCep() {
-  const cepRaw = document.getElementById('fCep')?.value.replace(/\D/g, '') || '';
+  const cepInput = document.getElementById('fCep');
   const msgEl = document.getElementById('cepMsg');
 
+  if (!cepInput || !msgEl) return;
+
+  const cepRaw = cepInput.value.replace(/\D/g, '');
+
   if (cepRaw.length !== 8) {
-    if (msgEl) setMsg(msgEl, 'CEP inválido. Use 8 dígitos.', 'err');
+    setMsg(msgEl, 'CEP inválido. Use 8 dígitos.', 'err');
     return;
   }
 
-  if (msgEl) setMsg(msgEl, 'Buscando...', '');
+  setMsg(msgEl, 'Buscando...', '');
 
   try {
-    const res = await fetch(`https://viacep.com.br/ws/${cepRaw}/json/`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    const res = await fetch(`https://viacep.com.br/ws/${cepRaw}/json/`, {
+      method: 'GET',
+      signal: controller.signal,
+      cache: 'no-store'
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
     const data = await res.json();
 
     if (data.erro) {
-      if (msgEl) setMsg(msgEl, 'CEP não encontrado.', 'err');
+      setMsg(msgEl, 'CEP não encontrado.', 'err');
       limparEndereco();
       return;
     }
@@ -834,18 +852,30 @@ async function buscarCep() {
     setValue('fCidade', data.localidade || '');
     setValue('fUF', data.uf || '');
 
-    if (msgEl) setMsg(msgEl, '✓ Endereço encontrado', 'ok');
+    setMsg(msgEl, '✓ Endereço encontrado', 'ok');
+
     calcularTaxaEntrega();
 
     const num = document.getElementById('fNum');
     if (num) num.focus();
-  } catch {
-    if (msgEl) setMsg(msgEl, 'Erro ao buscar. Verifique a conexão.', 'err');
+
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error);
+
+    setMsg(
+      msgEl,
+      'Não foi possível consultar o CEP agora. Preencha bairro/endereço manualmente.',
+      'err'
+    );
+
+    calcularTaxaEntrega();
   }
 }
 
 function limparEndereco() {
-  ['fRua', 'fBairro', 'fCidade', 'fUF'].forEach(id => setValue(id, ''));
+  setValue('fRua', '');
+  setValue('fCidade', '');
+  setValue('fUF', '');
 }
 
 function setValue(id, value) {
@@ -878,7 +908,6 @@ function calcularTaxaEntrega() {
   const bairroNorm = normalizar(bairroRaw);
   let taxa = null;
 
-  /* 1. tenta igualdade exata primeiro */
   for (const [chave, valor] of Object.entries(TAXAS_ENTREGA)) {
     if (bairroNorm === normalizar(chave)) {
       taxa = valor;
@@ -886,7 +915,6 @@ function calcularTaxaEntrega() {
     }
   }
 
-  /* 2. se não encontrar, tenta includes */
   if (taxa === null) {
     for (const [chave, valor] of Object.entries(TAXAS_ENTREGA)) {
       const chaveNorm = normalizar(chave);
@@ -922,7 +950,7 @@ function onPagChange() {
   const rowTaxaCartao = document.getElementById('rowTaxaCartao');
 
   if (trocoBox) trocoBox.style.display = pag === 'dinheiro' ? 'block' : 'none';
-  if (rowTaxaCartao) rowTaxaCartao.style.display = pag === 'cartao' ? 'flex' : 'none';
+  if (rowTaxaCartao) rowTaxaCartao.style.display = 'none';
 
   if (pag !== 'dinheiro') {
     const cb = document.getElementById('cbTroco');
@@ -977,14 +1005,14 @@ function calcTroco() {
 function totalFinal() {
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && getRadio('tipo') === 'entrega') ? taxaEntrega : 0;
-  const cartao = getRadio('pagamento') === 'cartao' ? 1.00 : 0;
+  const cartao = 0;
   return sub + entrega + cartao;
 }
 
 function atualizarTotais() {
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && getRadio('tipo') === 'entrega') ? taxaEntrega : 0;
-  const cartao = getRadio('pagamento') === 'cartao' ? 1.00 : 0;
+  const cartao = 0;
   const total = sub + entrega + cartao;
 
   setText('ttSub', 'R$ ' + fmtPreco(sub));
@@ -993,6 +1021,9 @@ function atualizarTotais() {
 
   const rowTaxaEntrega = document.getElementById('rowTaxaEntrega');
   if (rowTaxaEntrega) rowTaxaEntrega.style.display = entrega > 0 ? 'flex' : 'none';
+
+  const rowTaxaCartao = document.getElementById('rowTaxaCartao');
+  if (rowTaxaCartao) rowTaxaCartao.style.display = 'none';
 }
 
 /* finalizar */
@@ -1036,7 +1067,8 @@ function finalizarPedido() {
     cep = document.getElementById('fCep')?.value.trim() || '';
 
     if (!rua) {
-      alerta('Busque o CEP para preencher o endereço.');
+      alerta('Informe a rua ou busque o CEP.');
+      document.getElementById('fRua')?.focus();
       return;
     }
     if (!numero) {
@@ -1071,7 +1103,7 @@ function finalizarPedido() {
 
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && tipo === 'entrega') ? taxaEntrega : 0;
-  const taxaCart = pag === 'cartao' ? 1.00 : 0;
+  const taxaCart = 0;
   const total = sub + entrega + taxaCart;
 
   const valorPago = parseFloat(document.getElementById('fValorPago')?.value || '0') || 0;
@@ -1130,7 +1162,6 @@ function finalizarPedido() {
     ``,
     `💰 *Subtotal:* R$ ${fmtPreco(sub)}`,
     entrega > 0 ? `🛵 *Entrega:* R$ ${fmtPreco(entrega)}` : null,
-    taxaCart > 0 ? `💳 *Taxa cartão:* R$ ${fmtPreco(taxaCart)}` : null,
     `✅ *TOTAL: R$ ${fmtPreco(total)}*`,
     ``,
     `💳 *Pagamento:* ${pagLabels[pag]}`,
@@ -1286,7 +1317,6 @@ function imprimirPedido(id) {
 
     <div class="prt-row"><span>Subtotal:</span><span class="r">R$ ${fmtPreco(p.sub)}</span></div>
     ${p.entrega > 0 ? `<div class="prt-row"><span>Entrega:</span><span class="r">R$ ${fmtPreco(p.entrega)}</span></div>` : ''}
-    ${p.taxaCart > 0 ? `<div class="prt-row"><span>Taxa Cartão:</span><span class="r">R$ ${fmtPreco(p.taxaCart)}</span></div>` : ''}
     <div class="prt-total prt-row"><span>TOTAL:</span><span class="r">R$ ${fmtPreco(p.total)}</span></div>
     <hr class="prt-sep"/>
 
