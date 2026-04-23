@@ -363,7 +363,7 @@ const CARDAPIO = [
 /* ══════════════════════════════════════════════
    2. TAXAS DE ENTREGA
 ══════════════════════════════════════════════ */
-const TAXA_ENTREGA = {
+const TAXAS_ENTREGA = {
   'vista alegre': 3,
   'vila nova': 5,
   'agua comprida': 6,
@@ -878,11 +878,22 @@ function calcularTaxaEntrega() {
   const bairroNorm = normalizar(bairroRaw);
   let taxa = null;
 
+  /* 1. tenta igualdade exata primeiro */
   for (const [chave, valor] of Object.entries(TAXAS_ENTREGA)) {
-    const chaveNorm = normalizar(chave);
-    if (bairroNorm.includes(chaveNorm) || chaveNorm.includes(bairroNorm)) {
+    if (bairroNorm === normalizar(chave)) {
       taxa = valor;
       break;
+    }
+  }
+
+  /* 2. se não encontrar, tenta includes */
+  if (taxa === null) {
+    for (const [chave, valor] of Object.entries(TAXAS_ENTREGA)) {
+      const chaveNorm = normalizar(chave);
+      if (bairroNorm.includes(chaveNorm) || chaveNorm.includes(bairroNorm)) {
+        taxa = valor;
+        break;
+      }
     }
   }
 
@@ -982,11 +993,6 @@ function atualizarTotais() {
 
   const rowTaxaEntrega = document.getElementById('rowTaxaEntrega');
   if (rowTaxaEntrega) rowTaxaEntrega.style.display = entrega > 0 ? 'flex' : 'none';
-}
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
 }
 
 /* finalizar */
@@ -1340,7 +1346,8 @@ function normalizar(str) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .trim();
+    .trim()
+    .replace(/\s+/g, ' ');
 }
 
 function getRadio(name) {
@@ -1351,6 +1358,11 @@ function getRadio(name) {
 function setMsg(el, txt, tipo) {
   el.textContent = txt;
   el.className = 'fmsg' + (tipo ? ' ' + tipo : '');
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }
 
 function alerta(msg) {
