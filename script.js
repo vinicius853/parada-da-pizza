@@ -363,36 +363,17 @@ const CARDAPIO = [
 /* ══════════════════════════════════════════════
    2. TAXAS DE ENTREGA
 ══════════════════════════════════════════════ */
-const TAXAS_ENTREGA = {
-  'centro': 5.00,
-  'boa vista': 6.00,
-  'barra mansa': 5.00,
-  'ano bom': 7.00,
-  'santa clara': 8.00,
-  'vila industrial': 9.00,
-  'getúlio vargas': 9.00,
-  'getulio vargas': 9.00,
-  'bocaininha': 11.00,
-  'saudade': 9.00,
-  'nossa senhora das graças': 7.00,
-  'nsa. sra. das gracas': 7.00,
-  'piteiras': 11.00,
-  'paraíso': 9.00,
-  'paraiso': 9.00,
-  'caiçara': 10.00,
-  'caicara': 10.00,
-  'coqueiros': 8.00,
-  'são luiz': 11.00,
-  'sao luiz': 11.00,
-  'voldac': 7.00,
-  'jardim esperança': 10.00,
-  'jardim esperanca': 10.00,
-  'jardim presidente': 9.00,
-  'colônia': 13.00,
-  'colonia': 13.00,
-  'nova esperança': 10.00,
-  'nova esperanca': 10.00,
-  'morada da colina': 12.00,
+const TAXA_ENTREGA = {
+  'vista alegre': 3,
+  'vila nova': 5,
+  'agua comprida': 6,
+  'saudade': 7,
+  'vila maria': 8,
+  'vila brigida': 6,
+  'vila coringa': 7,
+  'ano bom': 15,
+  'centro': 15,
+  'boa vista': 10,
 };
 
 /* ══════════════════════════════════════════════
