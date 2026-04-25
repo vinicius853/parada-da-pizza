@@ -197,7 +197,7 @@ function criarCard(prod) {
     <div class="prod-card-top">
       <div class="prod-name">
         ${prod.nome}
-        ${prod.aceitaMeio ? '<span class="half-badge">Meio a meio</span>' : ''}
+        
       </div>
       <div class="prod-desc">${prod.desc}</div>
       ${precosHtml}
@@ -271,7 +271,7 @@ function renderModalProduto() {
         </div>
         <div class="ms-mode-opt ${modalModo === 'meio' ? 'sel' : ''}" onclick="setModoPizza('meio')">
           <strong>🌓 Meio a meio</strong><br>
-          <small>A primeira metade será ${modalProduto.nome}. O valor será o do sabor mais caro.</small>
+          <small>Escolha o outro sabor para montar sua pizza meio a meio.</small>
         </div>
       </div>
     `;
