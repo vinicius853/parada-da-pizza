@@ -1,368 +1,81 @@
-/* ═══════════════════════════════════════════════════════
-   PARADA DA PIZZA  ·  script.js
-   Cardápio real + admin oculto + preços por tamanho no card
-   ═══════════════════════════════════════════════════════ */
-
 'use strict';
 
 /* ══════════════════════════════════════════════
-   1. CARDÁPIO REAL
+   CARDÁPIO
 ══════════════════════════════════════════════ */
+
+function pizza(id, cat, nome, desc, p30, p35, img = '') {
+  return {
+    id,
+    cat,
+    nome,
+    desc,
+    img,
+    aceitaMeio: cat === 'salgadas' || cat === 'doces',
+    tamanhos: [
+      { label: 'Média (30cm)', preco: p30 },
+      { label: 'Maracanã (35cm)', preco: p35 }
+    ]
+  };
+}
+
+function simples(id, cat, nome, desc, preco, img = '') {
+  return {
+    id,
+    cat,
+    nome,
+    desc,
+    img,
+    aceitaMeio: false,
+    tamanhos: [{ label: 'Unidade', preco }]
+  };
+}
+
 const CARDAPIO = [
-  /* ─── PIZZAS SALGADAS ─── */
-  {
-    id: 1, cat: 'salgadas',
-    nome: 'Mussarela',
-    desc: 'Molho, mussarela, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 35.00 },
-      { label: 'Maracanã (35cm)', preco: 43.00 }
-    ]
-  },
-  {
-    id: 2, cat: 'salgadas',
-    nome: 'Queijo e Presunto',
-    desc: 'Molho, presunto, mussarela, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 35.00 },
-      { label: 'Maracanã (35cm)', preco: 45.00 }
-    ]
-  },
-  {
-    id: 3, cat: 'salgadas',
-    nome: 'Calabresa',
-    desc: 'Molho, mussarela, calabresa, azeitona, cebola e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 38.00 },
-      { label: 'Maracanã (35cm)', preco: 48.00 }
-    ]
-  },
-  {
-    id: 4, cat: 'salgadas',
-    nome: 'Peperone',
-    desc: 'Molho, mussarela, peperone, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 5, cat: 'salgadas',
-    nome: 'Lombo Canadense',
-    desc: 'Molho, mussarela, lombo canadense, catupiry e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 6, cat: 'salgadas',
-    nome: 'Portuguesa',
-    desc: 'Molho, presunto, queijo, tomate, milho, calabresa, azeitona, palmito, ovo, cebola e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
-  {
-    id: 7, cat: 'salgadas',
-    nome: 'Frango com Catupiry',
-    desc: 'Molho, mussarela, frango, catupiry e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
-  {
-    id: 8, cat: 'salgadas',
-    nome: 'A Moda da Casa',
-    desc: 'Molho, tomate, milho, calabresa, azeitona, palmito, ovo, frango, catupiry e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 9, cat: 'salgadas',
-    nome: 'Marguerita',
-    desc: 'Molho, mussarela, tomate, manjericão e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 38.00 },
-      { label: 'Maracanã (35cm)', preco: 45.00 }
-    ]
-  },
-  {
-    id: 10, cat: 'salgadas',
-    nome: '4 Queijos',
-    desc: 'Molho, mussarela, catupiry, cheddar, parmesão, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 11, cat: 'salgadas',
-    nome: 'FranBacon',
-    desc: 'Molho, mussarela, frango, catupiry, bacon e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 12, cat: 'salgadas',
-    nome: 'Napolitana',
-    desc: 'Molho, queijo, presunto, calabresa e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 38.00 },
-      { label: 'Maracanã (35cm)', preco: 48.00 }
-    ]
-  },
-  {
-    id: 13, cat: 'salgadas',
-    nome: 'Alho e Óleo',
-    desc: 'Molho, mussarela, alho frito, azeite e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 14, cat: 'salgadas',
-    nome: 'Caipira',
-    desc: 'Molho, mussarela, frango, milho, catupiry e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
-  {
-    id: 15, cat: 'salgadas',
-    nome: 'Brócolis com Bacon',
-    desc: 'Molho, mussarela, brócolis, bacon, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 16, cat: 'salgadas',
-    nome: 'Baiana',
-    desc: 'Molho, mussarela, calabresa, pimenta, cebola e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 17, cat: 'salgadas',
-    nome: 'Tomate Seco e Rúcula',
-    desc: 'Molho, mussarela, rúcula, tomate seco, catupiry e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 18, cat: 'salgadas',
-    nome: 'Batata Frita',
-    desc: 'Molho, mussarela, batata frita, queijo ralado por cima',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 19, cat: 'salgadas',
-    nome: 'Rocket',
-    desc: 'Qualquer sabor com batata frita no centro',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 60.00 },
-      { label: 'Maracanã (35cm)', preco: 70.00 }
-    ]
-  },
-  {
-    id: 20, cat: 'salgadas',
-    nome: 'Vegetariana',
-    desc: 'Molho, tomate, mussarela, milho, ervilha, palmito, cebola e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
-  {
-    id: 21, cat: 'salgadas',
-    nome: '3 Porquinhos',
-    desc: 'Molho, mussarela, bacon, lombo, calabresa, azeitona e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 22, cat: 'salgadas',
-    nome: 'Explosão da Casa',
-    desc: 'Molho, queijo, frango, catupiry, bacon, milho e batata palha',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 23, cat: 'salgadas',
-    nome: 'Moda Nordestina',
-    desc: 'Molho, queijo, presunto, carne seca, catupiry e cebola',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 24, cat: 'salgadas',
-    nome: 'Atum',
-    desc: 'Molho, queijo, atum e cebola',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 25, cat: 'salgadas',
-    nome: 'Paulistinha',
-    desc: 'Molho, queijo, calabresa, catupiry, cheddar e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
-  {
-    id: 26, cat: 'salgadas',
-    nome: 'Calabresa Mineira',
-    desc: 'Molho, queijo, calabresa, milho, bacon e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 27, cat: 'salgadas',
-    nome: 'Bacon',
-    desc: 'Molho, queijo, bacon, ovo e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 28, cat: 'salgadas',
-    nome: 'Frango com Cheddar',
-    desc: 'Molho, queijo, frango, cheddar e orégano',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 45.00 },
-      { label: 'Maracanã (35cm)', preco: 55.00 }
-    ]
-  },
+  pizza(1, 'salgadas', 'Mussarela', 'Molho, mussarela, azeitona e orégano', 35, 43),
+  pizza(2, 'salgadas', 'Queijo e Presunto', 'Molho, presunto, mussarela, azeitona e orégano', 35, 45),
+  pizza(3, 'salgadas', 'Calabresa', 'Molho, mussarela, calabresa, azeitona, cebola e orégano', 38, 48),
+  pizza(4, 'salgadas', 'Peperone', 'Molho, mussarela, peperone, azeitona e orégano', 40, 50),
+  pizza(5, 'salgadas', 'Lombo Canadense', 'Molho, mussarela, lombo canadense, catupiry e orégano', 40, 50),
+  pizza(6, 'salgadas', 'Portuguesa', 'Molho, presunto, queijo, tomate, milho, calabresa, azeitona, palmito, ovo, cebola e orégano', 45, 55),
+  pizza(7, 'salgadas', 'Frango com Catupiry', 'Molho, mussarela, frango, catupiry e orégano', 45, 55),
+  pizza(8, 'salgadas', 'A Moda da Casa', 'Molho, tomate, milho, calabresa, azeitona, palmito, ovo, frango, catupiry e orégano', 50, 60),
+  pizza(9, 'salgadas', 'Marguerita', 'Molho, mussarela, tomate, manjericão e orégano', 38, 45),
+  pizza(10, 'salgadas', '4 Queijos', 'Molho, mussarela, catupiry, cheddar, parmesão, azeitona e orégano', 40, 50),
+  pizza(11, 'salgadas', 'FranBacon', 'Molho, mussarela, frango, catupiry, bacon e orégano', 50, 60),
+  pizza(12, 'salgadas', 'Napolitana', 'Molho, queijo, presunto, calabresa e orégano', 38, 48),
+  pizza(13, 'salgadas', 'Alho e Óleo', 'Molho, mussarela, alho frito, azeite e orégano', 40, 50),
+  pizza(14, 'salgadas', 'Caipira', 'Molho, mussarela, frango, milho, catupiry e orégano', 45, 55),
+  pizza(15, 'salgadas', 'Brócolis com Bacon', 'Molho, mussarela, brócolis, bacon, azeitona e orégano', 40, 50),
+  pizza(16, 'salgadas', 'Baiana', 'Molho, mussarela, calabresa, pimenta, cebola e orégano', 40, 50),
+  pizza(17, 'salgadas', 'Tomate Seco e Rúcula', 'Molho, mussarela, rúcula, tomate seco, catupiry e orégano', 40, 50),
+  pizza(18, 'salgadas', 'Batata Frita', 'Molho, mussarela, batata frita, queijo ralado por cima', 50, 60),
+  pizza(19, 'salgadas', 'Rocket', 'Qualquer sabor com batata frita no centro', 60, 70),
+  pizza(20, 'salgadas', 'Vegetariana', 'Molho, tomate, mussarela, milho, ervilha, palmito, cebola e orégano', 45, 55),
+  pizza(21, 'salgadas', '3 Porquinhos', 'Molho, mussarela, bacon, lombo, calabresa, azeitona e orégano', 50, 60),
+  pizza(22, 'salgadas', 'Explosão da Casa', 'Molho, queijo, frango, catupiry, bacon, milho e batata palha', 50, 60),
+  pizza(23, 'salgadas', 'Moda Nordestina', 'Molho, queijo, presunto, carne seca, catupiry e cebola', 50, 60),
+  pizza(24, 'salgadas', 'Atum', 'Molho, queijo, atum e cebola', 50, 60),
+  pizza(25, 'salgadas', 'Paulistinha', 'Molho, queijo, calabresa, catupiry, cheddar e orégano', 45, 55),
+  pizza(26, 'salgadas', 'Calabresa Mineira', 'Molho, queijo, calabresa, milho, bacon e orégano', 50, 60),
+  pizza(27, 'salgadas', 'Bacon', 'Molho, queijo, bacon, ovo e orégano', 50, 60),
+  pizza(28, 'salgadas', 'Frango com Cheddar', 'Molho, queijo, frango, cheddar e orégano', 45, 55),
 
-  /* ─── DOCES ─── */
-  {
-    id: 29, cat: 'doces',
-    nome: 'Banana',
-    desc: 'Leite condensado, mussarela, banana e canela',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 30, cat: 'doces',
-    nome: 'Brigadeiro',
-    desc: 'Leite condensado, brigadeiro e confete',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 31, cat: 'doces',
-    nome: 'Beijinho',
-    desc: 'Leite condensado, beijinho e confete',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 32, cat: 'doces',
-    nome: 'Prestígio',
-    desc: 'Leite condensado, brigadeiro, coco e confete',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
-  {
-    id: 33, cat: 'doces',
-    nome: 'Morango com Nutella',
-    desc: 'Leite condensado, morango e nutella',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 50.00 },
-      { label: 'Maracanã (35cm)', preco: 60.00 }
-    ]
-  },
-  {
-    id: 34, cat: 'doces',
-    nome: 'Romeu e Julieta',
-    desc: 'Leite condensado, queijo, goiabada e catupiry',
-    tamanhos: [
-      { label: 'Média (30cm)', preco: 40.00 },
-      { label: 'Maracanã (35cm)', preco: 50.00 }
-    ]
-  },
+  pizza(29, 'doces', 'Banana', 'Leite condensado, mussarela, banana e canela', 40, 50),
+  pizza(30, 'doces', 'Brigadeiro', 'Leite condensado, brigadeiro e confete', 40, 50),
+  pizza(31, 'doces', 'Beijinho', 'Leite condensado, beijinho e confete', 40, 50),
+  pizza(32, 'doces', 'Prestígio', 'Leite condensado, brigadeiro, coco e confete', 40, 50),
+  pizza(33, 'doces', 'Morango com Nutella', 'Leite condensado, morango e nutella', 50, 60),
+  pizza(34, 'doces', 'Romeu e Julieta', 'Leite condensado, queijo, goiabada e catupiry', 40, 50),
 
-  /* ─── ESFIHAS ─── */
-  {
-    id: 35, cat: 'esfihas',
-    nome: 'Esfihas Variadas',
-    desc: 'Diversos sabores disponíveis. Consulte no atendimento.',
-    tamanhos: [{ label: 'Unidade', preco: 8.00 }]
-  },
-
-  /* ─── ADICIONAIS ─── */
-  {
-    id: 36, cat: 'adicionais',
-    nome: 'Bacon',
-    desc: 'Adicional de bacon crocante',
-    tamanhos: [{ label: 'Unidade', preco: 10.00 }]
-  },
-  {
-    id: 37, cat: 'adicionais',
-    nome: 'Cheddar',
-    desc: 'Adicional de cheddar cremoso',
-    tamanhos: [{ label: 'Unidade', preco: 8.00 }]
-  },
-  {
-    id: 38, cat: 'adicionais',
-    nome: 'Catupiry',
-    desc: 'Adicional de catupiry original',
-    tamanhos: [{ label: 'Unidade', preco: 8.00 }]
-  },
-  {
-    id: 39, cat: 'adicionais',
-    nome: 'Queijo Mussarela',
-    desc: 'Adicional de mussarela extra',
-    tamanhos: [{ label: 'Unidade', preco: 10.00 }]
-  },
-  {
-    id: 40, cat: 'adicionais',
-    nome: 'Cream Cheese',
-    desc: 'Adicional de cream cheese',
-    tamanhos: [{ label: 'Unidade', preco: 10.00 }]
-  }
+  simples(35, 'esfihas', 'Esfihas Variadas', 'Diversos sabores disponíveis. Consulte no atendimento.', 8),
+  simples(36, 'adicionais', 'Bacon', 'Adicional de bacon crocante', 10),
+  simples(37, 'adicionais', 'Cheddar', 'Adicional de cheddar cremoso', 8),
+  simples(38, 'adicionais', 'Catupiry', 'Adicional de catupiry original', 8),
+  simples(39, 'adicionais', 'Queijo Mussarela', 'Adicional de mussarela extra', 10),
+  simples(40, 'adicionais', 'Cream Cheese', 'Adicional de cream cheese', 10)
 ];
 
-/* ══════════════════════════════════════════════
-   2. TAXAS DE ENTREGA
-══════════════════════════════════════════════ */
 const TAXAS_ENTREGA = {
   'vista alegre': 3,
   'vila nova': 5,
@@ -376,24 +89,21 @@ const TAXAS_ENTREGA = {
   'boa vista': 10,
 };
 
-/* ══════════════════════════════════════════════
-   3. ESTADO
-══════════════════════════════════════════════ */
 let carrinho = [];
 let pedidos = JSON.parse(localStorage.getItem('pdp_pedidos') || '[]');
 let numeroPedido = parseInt(localStorage.getItem('pdp_counter') || '0', 10);
-let taxaEntrega = 0; // 0 sem taxa / -1 inválido / >0 válido
-let modalProduto = null;
-let modalTamanhoIdx = null;
+let taxaEntrega = 0;
 
-/* admin oculto */
+let modalProduto = null;
+let modalModo = 'inteira';
+let modalTamanhoIdx = null;
+let modalMetade1 = null;
+let modalMetade2 = null;
+
 let adminClickCount = 0;
 let adminLastClickTime = 0;
 const ADMIN_PASSWORD = 'marcelo2026';
 
-/* ══════════════════════════════════════════════
-   4. CATEGORIAS
-══════════════════════════════════════════════ */
 const CATS = [
   { key: 'salgadas', label: '🍕 Pizzas Salgadas' },
   { key: 'doces', label: '🍫 Pizzas Doces' },
@@ -402,8 +112,9 @@ const CATS = [
 ];
 
 /* ══════════════════════════════════════════════
-   5. VIEWS
+   VIEWS
 ══════════════════════════════════════════════ */
+
 function goView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
 
@@ -414,6 +125,7 @@ function goView(view) {
   if (navCardapio) navCardapio.classList.toggle('active', view === 'cardapio');
 
   if (view === 'painel') renderPainel();
+
   if (view === 'checkout') {
     renderCoCart();
     atualizarTotais();
@@ -427,8 +139,9 @@ function capitalize(str) {
 }
 
 /* ══════════════════════════════════════════════
-   6. CARDÁPIO
+   CARDÁPIO
 ══════════════════════════════════════════════ */
+
 function renderCardapio(filtro = 'all') {
   const catalog = document.getElementById('catalog');
   if (!catalog) return;
@@ -452,9 +165,7 @@ function renderCardapio(filtro = 'all') {
     const grid = document.createElement('div');
     grid.className = 'products-grid';
 
-    items.forEach(prod => {
-      grid.appendChild(criarCard(prod));
-    });
+    items.forEach(prod => grid.appendChild(criarCard(prod)));
 
     section.appendChild(grid);
     catalog.appendChild(section);
@@ -465,60 +176,49 @@ function criarCard(prod) {
   const card = document.createElement('div');
   card.className = 'prod-card';
 
-  const temVariacao = prod.tamanhos.length > 1;
-  const cardTop = document.createElement('div');
-  cardTop.className = 'prod-card-top';
-
   let precosHtml = '';
 
-  if (temVariacao) {
-    const tam1 = prod.tamanhos[0];
-    const tam2 = prod.tamanhos[1];
-
+  if (prod.tamanhos.length > 1) {
     precosHtml = `
       <div class="prod-prices">
-        <div class="price-line">
-          <span>30 cm</span>
-          <span>R$ ${fmtPreco(tam1.preco)}</span>
-        </div>
-        <div class="price-line">
-          <span>35 cm</span>
-          <span>R$ ${fmtPreco(tam2.preco)}</span>
-        </div>
+        <div class="price-line"><span>30 cm</span><span>R$ ${fmtPreco(prod.tamanhos[0].preco)}</span></div>
+        <div class="price-line"><span>35 cm</span><span>R$ ${fmtPreco(prod.tamanhos[1].preco)}</span></div>
       </div>
     `;
   } else {
-    precosHtml = `
-      <div class="prod-price-single">
-        R$ ${fmtPreco(prod.tamanhos[0].preco)}
-      </div>
-    `;
+    precosHtml = `<div class="prod-price-single">R$ ${fmtPreco(prod.tamanhos[0].preco)}</div>`;
   }
 
-  cardTop.innerHTML = `
-    <div class="prod-name">${prod.nome}</div>
-    <div class="prod-desc">${prod.desc}</div>
-    ${precosHtml}
+  const imgHtml = prod.img
+    ? `<img src="${prod.img}" class="prod-img" alt="${prod.nome}" onerror="this.outerHTML='<div class=&quot;prod-img-fallback&quot;>🍕</div>'">`
+    : `<div class="prod-img-fallback">🍕</div>`;
+
+  card.innerHTML = `
+    <div class="prod-card-top">
+      <div class="prod-name">
+        ${prod.nome}
+        ${prod.aceitaMeio ? '<span class="half-badge">Meio a meio</span>' : ''}
+      </div>
+      <div class="prod-desc">${prod.desc}</div>
+      ${precosHtml}
+    </div>
+
+    <div class="prod-card-bot">
+      ${imgHtml}
+      <button class="btn-add" title="Adicionar">+</button>
+    </div>
   `;
 
-  const cardBot = document.createElement('div');
-  cardBot.className = 'prod-card-bot';
-  cardBot.innerHTML = `<button class="btn-add" title="Adicionar">+</button>`;
-
-  const btnAdd = cardBot.querySelector('.btn-add');
-  btnAdd.addEventListener('click', e => {
+  card.querySelector('.btn-add').addEventListener('click', e => {
     e.stopPropagation();
     abrirModal(prod);
   });
 
   card.addEventListener('click', () => abrirModal(prod));
-  card.appendChild(cardTop);
-  card.appendChild(cardBot);
 
   return card;
 }
 
-/* filtro categorias */
 function bindCategoryFilter() {
   const catBar = document.getElementById('catBar');
   if (!catBar) return;
@@ -534,65 +234,166 @@ function bindCategoryFilter() {
 }
 
 /* ══════════════════════════════════════════════
-   7. MODAL TAMANHO
+   MODAL / MEIO A MEIO
 ══════════════════════════════════════════════ */
+
 function abrirModal(prod) {
   modalProduto = prod;
+  modalModo = 'inteira';
   modalTamanhoIdx = null;
+  modalMetade1 = null;
+  modalMetade2 = null;
 
-  const nomeEl = document.getElementById('msProdName');
-  const descEl = document.getElementById('msProdDesc');
-  const sizesContainer = document.getElementById('msSizes');
-
-  if (!nomeEl || !descEl || !sizesContainer) return;
-
-  nomeEl.textContent = prod.nome;
-  descEl.textContent = prod.desc;
-  sizesContainer.innerHTML = '';
-
-  prod.tamanhos.forEach((tam, idx) => {
-    const div = document.createElement('div');
-    div.className = 'ms-size-opt';
-    div.dataset.idx = idx;
-    div.innerHTML = `
-      <div class="ms-size-info">
-        <div class="ms-size-label">${tam.label}</div>
-      </div>
-      <div class="ms-size-price">R$ ${fmtPreco(tam.preco)}</div>
-    `;
-    div.addEventListener('click', () => selecionarTamanho(div, idx));
-    sizesContainer.appendChild(div);
-
-    if (prod.tamanhos.length === 1) {
-      setTimeout(() => selecionarTamanho(div, 0), 20);
-    }
-  });
-
+  renderModalProduto();
   abrirOverlay('overlaySize');
 }
 
-function selecionarTamanho(el, idx) {
-  document.querySelectorAll('.ms-size-opt').forEach(o => o.classList.remove('sel'));
-  el.classList.add('sel');
+function renderModalProduto() {
+  const nomeEl = document.getElementById('msProdName');
+  const descEl = document.getElementById('msProdDesc');
+  const sizesContainer = document.getElementById('msSizes');
+  const btnConfirmar = document.getElementById('btnConfirmar');
+
+  if (!nomeEl || !descEl || !sizesContainer || !btnConfirmar || !modalProduto) return;
+
+  nomeEl.textContent = modalProduto.nome;
+  descEl.textContent = modalProduto.desc;
+
+  let html = '';
+
+  if (modalProduto.aceitaMeio) {
+    html += `
+      <div class="ms-helper">Escolha se deseja a pizza inteira ou meio a meio.</div>
+      <div class="ms-mode-list">
+        <div class="ms-mode-opt ${modalModo === 'inteira' ? 'sel' : ''}" onclick="setModoPizza('inteira')">
+          <strong>🍕 Pizza inteira</strong><br>
+          <small>Um único sabor.</small>
+        </div>
+        <div class="ms-mode-opt ${modalModo === 'meio' ? 'sel' : ''}" onclick="setModoPizza('meio')">
+          <strong>🌓 Meio a meio</strong><br>
+          <small>A primeira metade será ${modalProduto.nome}. O valor será o do sabor mais caro.</small>
+        </div>
+      </div>
+    `;
+  }
+
+  html += `<div class="ms-half-title">Escolha o tamanho</div>`;
+  html += `<div class="ms-sizes">`;
+
+  modalProduto.tamanhos.forEach((tam, idx) => {
+    html += `
+      <div class="ms-size-opt ${modalTamanhoIdx === idx ? 'sel' : ''}" onclick="selecionarTamanhoModal(${idx})">
+        <div class="ms-size-info"><div class="ms-size-label">${tam.label}</div></div>
+        <div class="ms-size-price">R$ ${fmtPreco(tam.preco)}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  if (modalModo === 'meio') {
+    html += renderHalfSelector();
+  }
+
+  sizesContainer.innerHTML = html;
+
+  if (modalProduto.tamanhos.length === 1 && modalTamanhoIdx === null) {
+    modalTamanhoIdx = 0;
+    renderModalProduto();
+    return;
+  }
+
+  btnConfirmar.textContent = modalModo === 'meio' ? 'Adicionar meio a meio' : 'Adicionar ao carrinho';
+}
+
+function setModoPizza(modo) {
+  modalModo = modo;
+
+  if (modo === 'meio') {
+    modalMetade1 = modalProduto.id;
+    modalMetade2 = null;
+  } else {
+    modalMetade1 = null;
+    modalMetade2 = null;
+  }
+
+  renderModalProduto();
+}
+
+function selecionarTamanhoModal(idx) {
   modalTamanhoIdx = idx;
+  renderModalProduto();
+}
+
+function renderHalfSelector() {
+  const pizzas = CARDAPIO.filter(p => p.aceitaMeio && p.cat === modalProduto.cat);
+  const metade1 = CARDAPIO.find(p => p.id === modalMetade1);
+
+  if (modalMetade2) {
+    const metade2 = CARDAPIO.find(p => p.id === modalMetade2);
+
+    return `
+      <div class="ms-helper" style="background:#FFF2F2;padding:12px;border-radius:10px;margin-top:10px;">
+        ✅ <strong>Meio a meio selecionada</strong><br>
+        <strong>Metade 1:</strong> ${metade1.nome}<br>
+        <strong>Metade 2:</strong> ${metade2.nome}<br>
+        <small>Agora toque em “Adicionar meio a meio”.</small>
+      </div>
+    `;
+  }
+
+  let html = `
+    <div class="ms-helper">
+      <strong>Metade 1:</strong> ${metade1.nome}<br>
+      Agora escolha apenas a segunda metade.
+    </div>
+
+    <div class="ms-half-title">Escolha a segunda metade</div>
+    <div class="ms-half-list">
+  `;
+
+  pizzas.forEach(p => {
+    html += `
+      <div class="ms-half-opt" onclick="selecionarMetade(2, ${p.id})">
+        <strong>${p.nome}</strong><br>
+        <small>${p.desc}</small>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  return html;
+}
+
+function selecionarMetade(num, id) {
+  if (num === 2) {
+    modalMetade2 = id;
+  }
+
+  renderModalProduto();
+
+  setTimeout(() => {
+    const btn = document.getElementById('btnConfirmar');
+    if (btn) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 100);
 }
 
 function confirmarAdicao() {
   if (!modalProduto || modalTamanhoIdx === null) {
-    const sizes = document.getElementById('msSizes');
-    if (sizes) {
-      sizes.style.outline = '2px solid #CC1B1B';
-      sizes.style.borderRadius = '8px';
-      setTimeout(() => {
-        sizes.style.outline = '';
-        sizes.style.borderRadius = '';
-      }, 1000);
-    }
+    alerta('Escolha o tamanho.');
+    return;
+  }
+
+  if (modalModo === 'meio') {
+    adicionarMeioAMeio();
     return;
   }
 
   const tam = modalProduto.tamanhos[modalTamanhoIdx];
-  const chave = `${modalProduto.id}_${modalTamanhoIdx}`;
+  const chave = `inteira_${modalProduto.id}_${modalTamanhoIdx}`;
   const existente = carrinho.find(c => c.chave === chave);
 
   if (existente) {
@@ -600,11 +401,59 @@ function confirmarAdicao() {
   } else {
     carrinho.push({
       chave,
+      tipoItem: 'inteira',
       prodId: modalProduto.id,
       nome: modalProduto.nome,
       tamanho: tam.label,
       preco: tam.preco,
       qtd: 1
+    });
+  }
+
+  fecharOverlay('overlaySize');
+  atualizarCarrinhoUI();
+  flashCartBar();
+}
+
+function adicionarMeioAMeio() {
+  if (!modalMetade1 || !modalMetade2) {
+    alerta('Escolha a segunda metade da pizza.');
+    return;
+  }
+
+  const sabor1 = CARDAPIO.find(p => p.id === modalMetade1);
+  const sabor2 = CARDAPIO.find(p => p.id === modalMetade2);
+
+  if (!sabor1 || !sabor2) {
+    alerta('Erro ao localizar os sabores escolhidos.');
+    return;
+  }
+
+  const tam1 = sabor1.tamanhos[modalTamanhoIdx];
+  const tam2 = sabor2.tamanhos[modalTamanhoIdx];
+
+  const precoFinal = Math.max(tam1.preco, tam2.preco);
+  const tamanhoLabel = modalProduto.tamanhos[modalTamanhoIdx].label;
+
+  const nomeFinal = 'Pizza Meio a Meio';
+  const tamanhoFinal = `${tamanhoLabel} — ${sabor1.nome} / ${sabor2.nome}`;
+
+  const chave = `meio_${modalTamanhoIdx}_${sabor1.id}_${sabor2.id}`;
+  const existente = carrinho.find(c => c.chave === chave);
+
+  if (existente) {
+    existente.qtd += 1;
+  } else {
+    carrinho.push({
+      chave,
+      tipoItem: 'meio',
+      prodId: null,
+      nome: nomeFinal,
+      tamanho: tamanhoFinal,
+      preco: precoFinal,
+      qtd: 1,
+      metade1: sabor1.nome,
+      metade2: sabor2.nome
     });
   }
 
@@ -622,8 +471,9 @@ function fecharSizeModal() {
 }
 
 /* ══════════════════════════════════════════════
-   8. CARRINHO
+   CARRINHO
 ══════════════════════════════════════════════ */
+
 function subtotalCarrinho() {
   return carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
 }
@@ -670,6 +520,7 @@ function mudarQtd(chave, delta) {
   if (!item) return;
 
   item.qtd += delta;
+
   if (item.qtd <= 0) {
     carrinho = carrinho.filter(c => c.chave !== chave);
     if (carrinho.length === 0) fecharCarrinho();
@@ -684,7 +535,6 @@ function removerItem(chave) {
   atualizarCarrinhoUI();
 }
 
-/* drawer */
 function abrirCarrinho() {
   renderDrawer();
   abrirOverlay('overlayCart');
@@ -701,6 +551,7 @@ function overlayClickCart(e) {
 function renderDrawer() {
   const body = document.getElementById('drawerBody');
   const totalEl = document.getElementById('drawerTotal');
+
   if (!body || !totalEl) return;
 
   if (!carrinho.length) {
@@ -710,21 +561,26 @@ function renderDrawer() {
   }
 
   body.innerHTML = '';
+
   carrinho.forEach(item => {
     const div = document.createElement('div');
     div.className = 'cart-item';
+
     div.innerHTML = `
       <div class="ci-info">
         <div class="ci-name">${item.nome}</div>
-        <div class="ci-size">${item.tamanho}</div>
+        <div class="ci-size">${formatarDetalheItem(item)}</div>
       </div>
+
       <div class="ci-price">R$ ${fmtPreco(item.preco * item.qtd)}</div>
+
       <div class="ci-controls">
         <button class="qty-btn" onclick="mudarQtd('${item.chave}', -1)">−</button>
         <span class="qty-val">${item.qtd}</span>
         <button class="qty-btn" onclick="mudarQtd('${item.chave}', 1)">+</button>
       </div>
     `;
+
     body.appendChild(div);
   });
 
@@ -733,6 +589,7 @@ function renderDrawer() {
 
 function irCheckout() {
   if (!carrinho.length) return;
+
   fecharCarrinho();
   renderCoCart();
   atualizarTotais();
@@ -740,11 +597,13 @@ function irCheckout() {
 }
 
 /* ══════════════════════════════════════════════
-   9. CHECKOUT
+   CHECKOUT
 ══════════════════════════════════════════════ */
+
 function renderCoCart() {
   const list = document.getElementById('coCartItems');
   const subEl = document.getElementById('coSubDisplay');
+
   if (!list || !subEl) return;
 
   list.innerHTML = '';
@@ -752,13 +611,15 @@ function renderCoCart() {
   carrinho.forEach(item => {
     const div = document.createElement('div');
     div.className = 'co-cart-item';
+
     div.innerHTML = `
       <div class="co-item-left">
         <div>
           <div class="co-item-name">${item.nome}</div>
-          <div class="co-item-size">${item.tamanho}</div>
+          <div class="co-item-size">${formatarDetalheItem(item)}</div>
         </div>
       </div>
+
       <div class="co-item-right">
         <div class="co-item-price">R$ ${fmtPreco(item.preco * item.qtd)}</div>
         <div class="co-item-controls">
@@ -768,6 +629,7 @@ function renderCoCart() {
         </div>
       </div>
     `;
+
     list.appendChild(div);
   });
 
@@ -777,12 +639,14 @@ function renderCoCart() {
 function onTipoChange() {
   const tipo = getRadio('tipo');
   const endBlock = document.getElementById('enderecoBlock');
+
   if (endBlock) {
     endBlock.style.display = tipo === 'entrega' ? 'block' : 'none';
   }
 
   if (tipo !== 'entrega') {
     taxaEntrega = 0;
+
     const rowTaxa = document.getElementById('rowTaxaEntrega');
     if (rowTaxa) rowTaxa.style.display = 'none';
   }
@@ -792,8 +656,10 @@ function onTipoChange() {
   ['lblRetirada', 'lblEntrega'].forEach(id => {
     const lbl = document.getElementById(id);
     if (!lbl) return;
+
     const inp = lbl.querySelector('input');
     const body = lbl.querySelector('.type-opt-body');
+
     if (!inp || !body) return;
 
     body.style.borderColor = inp.checked ? 'var(--red)' : '';
@@ -802,9 +668,14 @@ function onTipoChange() {
 }
 
 /* CEP */
+
 function maskCep(input) {
   let v = input.value.replace(/\D/g, '');
-  if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+
+  if (v.length > 5) {
+    v = v.slice(0, 5) + '-' + v.slice(5, 8);
+  }
+
   input.value = v;
 }
 
@@ -835,9 +706,7 @@ async function buscarCep() {
 
     clearTimeout(timeout);
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
 
@@ -883,7 +752,8 @@ function setValue(id, value) {
   if (el) el.value = value;
 }
 
-/* taxa bairro */
+/* TAXA DE ENTREGA */
+
 function onBairroInput() {
   calcularTaxaEntrega();
 }
@@ -918,6 +788,7 @@ function calcularTaxaEntrega() {
   if (taxa === null) {
     for (const [chave, valor] of Object.entries(TAXAS_ENTREGA)) {
       const chaveNorm = normalizar(chave);
+
       if (bairroNorm.includes(chaveNorm) || chaveNorm.includes(bairroNorm)) {
         taxa = valor;
         break;
@@ -943,7 +814,8 @@ function calcularTaxaEntrega() {
   atualizarTotais();
 }
 
-/* pagamento */
+/* PAGAMENTO */
+
 function onPagChange() {
   const pag = getRadio('pagamento');
   const trocoBox = document.getElementById('trocoBox');
@@ -974,6 +846,7 @@ function onTrocoToggle() {
   const valorPago = document.getElementById('fValorPago');
 
   if (fields) fields.style.display = checked ? 'block' : 'none';
+
   if (!checked) {
     if (result) result.textContent = '';
     if (valorPago) valorPago.value = '';
@@ -984,6 +857,7 @@ function calcTroco() {
   const total = totalFinal();
   const pago = parseFloat(document.getElementById('fValorPago')?.value || '0') || 0;
   const el = document.getElementById('trocoResult');
+
   if (!el) return;
 
   if (pago <= 0) {
@@ -1001,32 +875,31 @@ function calcTroco() {
   }
 }
 
-/* totais */
+/* TOTAIS */
+
 function totalFinal() {
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && getRadio('tipo') === 'entrega') ? taxaEntrega : 0;
-  const cartao = 0;
-  return sub + entrega + cartao;
+  return sub + entrega;
 }
 
 function atualizarTotais() {
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && getRadio('tipo') === 'entrega') ? taxaEntrega : 0;
-  const cartao = 0;
-  const total = sub + entrega + cartao;
+  const total = sub + entrega;
 
   setText('ttSub', 'R$ ' + fmtPreco(sub));
   setText('ttEntrega', 'R$ ' + fmtPreco(entrega));
   setText('ttTotal', 'R$ ' + fmtPreco(total));
 
   const rowTaxaEntrega = document.getElementById('rowTaxaEntrega');
-  if (rowTaxaEntrega) rowTaxaEntrega.style.display = entrega > 0 ? 'flex' : 'none';
-
-  const rowTaxaCartao = document.getElementById('rowTaxaCartao');
-  if (rowTaxaCartao) rowTaxaCartao.style.display = 'none';
+  if (rowTaxaEntrega) {
+    rowTaxaEntrega.style.display = entrega > 0 ? 'flex' : 'none';
+  }
 }
 
-/* finalizar */
+/* FINALIZAR */
+
 function finalizarPedido() {
   const nome = document.getElementById('fNome')?.value.trim() || '';
   const tel = document.getElementById('fTel')?.value.trim() || '';
@@ -1038,19 +911,23 @@ function finalizarPedido() {
     document.getElementById('fNome')?.focus();
     return;
   }
+
   if (!tel) {
     alerta('Informe seu WhatsApp.');
     document.getElementById('fTel')?.focus();
     return;
   }
+
   if (!tipo) {
     alerta('Selecione o tipo de pedido (Retirada ou Entrega).');
     return;
   }
+
   if (!pag) {
     alerta('Selecione a forma de pagamento.');
     return;
   }
+
   if (!carrinho.length) {
     alerta('Seu carrinho está vazio!');
     return;
@@ -1071,20 +948,24 @@ function finalizarPedido() {
       document.getElementById('fRua')?.focus();
       return;
     }
+
     if (!numero) {
       alerta('Informe o número do endereço.');
       document.getElementById('fNum')?.focus();
       return;
     }
+
     if (!bairro) {
       alerta('Informe o bairro.');
       document.getElementById('fBairro')?.focus();
       return;
     }
+
     if (taxaEntrega === -1) {
       alerta('No momento não entregamos para esse bairro. Escolha Retirada ou altere o endereço.');
       return;
     }
+
     if (taxaEntrega === 0 && bairro) {
       alerta('Bairro não reconhecido. Verifique o bairro ou escolha Retirada.');
       return;
@@ -1094,6 +975,7 @@ function finalizarPedido() {
   if (pag === 'dinheiro' && document.getElementById('cbTroco')?.checked) {
     const pago = parseFloat(document.getElementById('fValorPago')?.value || '0') || 0;
     const total = totalFinal();
+
     if (pago > 0 && pago < total) {
       alerta('O valor informado para troco é menor que o total do pedido.');
       document.getElementById('fValorPago')?.focus();
@@ -1103,8 +985,7 @@ function finalizarPedido() {
 
   const sub = subtotalCarrinho();
   const entrega = (taxaEntrega > 0 && tipo === 'entrega') ? taxaEntrega : 0;
-  const taxaCart = 0;
-  const total = sub + entrega + taxaCart;
+  const total = sub + entrega;
 
   const valorPago = parseFloat(document.getElementById('fValorPago')?.value || '0') || 0;
   const troco = (pag === 'dinheiro' && document.getElementById('cbTroco')?.checked && valorPago > 0)
@@ -1129,13 +1010,16 @@ function finalizarPedido() {
     endereco: tipo === 'entrega' ? { rua, numero, bairro, cidade, uf, cep } : null,
     itens: carrinho.map(i => ({
       nome: i.nome,
-      tamanho: i.tamanho,
+      tamanho: formatarDetalheItem(i),
       qtd: i.qtd,
-      preco: i.preco
+      preco: i.preco,
+      tipoItem: i.tipoItem || 'inteira',
+      metade1: i.metade1 || null,
+      metade2: i.metade2 || null
     })),
     sub,
     entrega,
-    taxaCart,
+    taxaCart: 0,
     total,
     pagamento: pagLabels[pag],
     troco
@@ -1144,9 +1028,9 @@ function finalizarPedido() {
   pedidos.unshift(pedido);
   localStorage.setItem('pdp_pedidos', JSON.stringify(pedidos));
 
-  const linhasItens = pedido.itens
-    .map(i => `  • ${i.qtd}x ${i.nome} (${i.tamanho}) — R$ ${fmtPreco(i.preco * i.qtd)}`)
-    .join('\n');
+  const linhasItens = pedido.itens.map(i => {
+    return `  • ${i.qtd}x ${i.nome} (${i.tamanho}) — R$ ${fmtPreco(i.preco * i.qtd)}`;
+  }).join('\n');
 
   const msg = [
     `🍕 *PARADA DA PIZZA — Pedido #${String(numeroPedido).padStart(3, '0')}*`,
@@ -1174,9 +1058,8 @@ function finalizarPedido() {
   renderPainel();
 }
 
-/* ══════════════════════════════════════════════
-   10. PAINEL
-══════════════════════════════════════════════ */
+/* PAINEL */
+
 function renderPainel() {
   const list = document.getElementById('painelList');
   if (!list) return;
@@ -1206,12 +1089,14 @@ function renderPainel() {
     const badgeLabel = p.tipo === 'retirada' ? '🏪 Retirada' : '🛵 Entrega';
 
     let endHtml = '';
+
     if (p.endereco) {
       const e = p.endereco;
       endHtml = `<div class="pedido-addr">📍 ${e.rua}, ${e.numero} — ${e.bairro}, ${e.cidade}-${e.uf} (CEP: ${e.cep})</div>`;
     }
 
     let trocoHtml = '';
+
     if (p.troco !== null && p.troco !== undefined) {
       trocoHtml = `<div class="pedido-pay">💵 Troco: R$ ${fmtPreco(p.troco)}</div>`;
     }
@@ -1252,6 +1137,7 @@ function renderPainel() {
 
 function removerPedido(id) {
   if (!confirm('Remover este pedido?')) return;
+
   pedidos = pedidos.filter(p => p.id !== id);
   localStorage.setItem('pdp_pedidos', JSON.stringify(pedidos));
   renderPainel();
@@ -1259,14 +1145,14 @@ function removerPedido(id) {
 
 function limparTodos() {
   if (!confirm('Deseja apagar todos os pedidos?')) return;
+
   pedidos = [];
   localStorage.removeItem('pdp_pedidos');
   renderPainel();
 }
 
-/* ══════════════════════════════════════════════
-   11. IMPRESSÃO
-══════════════════════════════════════════════ */
+/* IMPRESSÃO */
+
 function imprimirPedido(id) {
   const p = pedidos.find(o => o.id === id);
   if (!p) return;
@@ -1279,6 +1165,7 @@ function imprimirPedido(id) {
   `).join('');
 
   let endBloco = '';
+
   if (p.endereco) {
     const e = p.endereco;
     endBloco = `
@@ -1291,6 +1178,7 @@ function imprimirPedido(id) {
   }
 
   let trocoBloco = '';
+
   if (p.troco !== null && p.troco !== undefined) {
     trocoBloco = `<div class="prt-row"><span>Troco:</span><span class="r">R$ ${fmtPreco(p.troco)}</span></div>`;
   }
@@ -1333,9 +1221,8 @@ function imprimirPedido(id) {
   window.print();
 }
 
-/* ══════════════════════════════════════════════
-   12. ADMIN OCULTO
-══════════════════════════════════════════════ */
+/* ADMIN */
+
 function bindAdminSecretAccess() {
   const trigger = document.getElementById('brandNameTrigger');
   if (!trigger) return;
@@ -1355,6 +1242,7 @@ function bindAdminSecretAccess() {
       adminClickCount = 0;
 
       const senha = window.prompt('Acesso restrito - paradadapizza');
+
       if (senha === ADMIN_PASSWORD) {
         goView('painel');
       } else if (senha !== null) {
@@ -1364,9 +1252,12 @@ function bindAdminSecretAccess() {
   });
 }
 
-/* ══════════════════════════════════════════════
-   13. UTILITÁRIOS
-══════════════════════════════════════════════ */
+/* UTILITÁRIOS */
+
+function formatarDetalheItem(item) {
+  return item.tamanho;
+}
+
 function fmtPreco(v) {
   return Number(v).toFixed(2).replace('.', ',');
 }
@@ -1402,6 +1293,7 @@ function alerta(msg) {
 function abrirOverlay(id) {
   const el = document.getElementById(id);
   if (!el) return;
+
   el.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1409,13 +1301,13 @@ function abrirOverlay(id) {
 function fecharOverlay(id) {
   const el = document.getElementById(id);
   if (!el) return;
+
   el.classList.remove('open');
   document.body.style.overflow = '';
 }
 
-/* ══════════════════════════════════════════════
-   14. INIT
-══════════════════════════════════════════════ */
+/* INIT */
+
 (function init() {
   renderCardapio();
   atualizarCarrinhoUI();
@@ -1423,6 +1315,7 @@ function fecharOverlay(id) {
   bindAdminSecretAccess();
 
   const fCep = document.getElementById('fCep');
+
   if (fCep) {
     fCep.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
