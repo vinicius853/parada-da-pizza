@@ -62,6 +62,17 @@ function fecharOverlay(id) {
    VIEWS
 ════════════════════════ */
 
+function controlarCartFloat(view) {
+  const cartFloat = document.getElementById('cartFloat');
+  if (!cartFloat) return;
+
+  if (view === 'cardapio' && carrinho.length > 0) {
+    cartFloat.style.display = 'flex';
+  } else {
+    cartFloat.style.display = 'none';
+  }
+}
+
 function goView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
 
@@ -71,10 +82,18 @@ function goView(view) {
   const navCardapio = document.getElementById('navCardapio');
   if (navCardapio) navCardapio.classList.toggle('active', view === 'cardapio');
 
-  if (view === 'painel')   renderPainel();
-  if (view === 'checkout') { renderCoCart(); atualizarTotais(); }
+  if (view === 'painel') {
+    renderPainel();
+  }
 
-  window.scrollTo(0, 0);
+  if (view === 'checkout') {
+    renderCoCart();
+    atualizarTotais();
+  }
+
+  controlarCartFloat(view);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function capitalize(str) {
@@ -88,6 +107,8 @@ function capitalize(str) {
 function renderPainel() {
   const list = document.getElementById('painelList');
   if (!list) return;
+
+  controlarCartFloat('painel');
 
   list.innerHTML = '';
 
@@ -111,12 +132,13 @@ function renderPainel() {
       .join('\n');
 
     const badgeClass = p.tipo === 'retirada' ? 'badge-retirada' : 'badge-entrega';
-    const badgeLabel = p.tipo === 'retirada' ? '🏪 Retirada'    : '🛵 Entrega';
+    const badgeLabel = p.tipo === 'retirada' ? '🏪 Retirada' : '🛵 Entrega';
 
     let endHtml = '';
     if (p.endereco) {
       const e = p.endereco;
-      endHtml = `<div class="pedido-addr">📍 ${e.rua}, ${e.numero} — ${e.bairro}, ${e.cidade}-${e.uf} (CEP: ${e.cep})</div>`;
+      const cepTxt = e.cep ? ` (CEP: ${e.cep})` : '';
+      endHtml = `<div class="pedido-addr">📍 ${e.rua}, ${e.numero} — ${e.bairro}, ${e.cidade}-${e.uf}${cepTxt}</div>`;
     }
 
     let trocoHtml = '';
@@ -149,7 +171,7 @@ function renderPainel() {
       </div>
 
       <div class="pedido-actions">
-        <button class="btn-imprimir"      onclick="imprimirPedido(${p.id})">🖨️ Imprimir</button>
+        <button class="btn-imprimir" onclick="imprimirPedido(${p.id})">🖨️ Imprimir</button>
         <button class="btn-remover-pedido" onclick="removerPedido(${p.id})">✕</button>
       </div>
     `;
@@ -193,7 +215,7 @@ function imprimirPedido(id) {
       <div>${e.rua}, ${e.numero}</div>
       <div>${e.bairro}</div>
       <div>${e.cidade} - ${e.uf}</div>
-      <div>CEP: ${e.cep}</div>
+      ${e.cep ? `<div>CEP: ${e.cep}</div>` : ''}
     `;
   }
 
@@ -260,6 +282,7 @@ function bindAdminSecretAccess() {
     if (adminClickCount >= 3) {
       adminClickCount = 0;
       const senha = window.prompt('Acesso restrito - paradadapizza');
+
       if (senha === ADMIN_PASSWORD) {
         goView('painel');
       } else if (senha !== null) {
@@ -278,6 +301,7 @@ function bindAdminSecretAccess() {
   atualizarCarrinhoUI();
   bindCategoryFilter();
   bindAdminSecretAccess();
+  controlarCartFloat('cardapio');
 
   const fCep = document.getElementById('fCep');
 
