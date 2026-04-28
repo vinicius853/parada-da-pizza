@@ -44,11 +44,22 @@ function criarCard(prod) {
 
   let precosHtml = '';
 
-  if (prod.tamanhos.length > 1) {
+  if (prod.aceitaMeio) {
     precosHtml = `
       <div class="prod-prices">
         <div class="price-line"><span>30 cm</span><span>R$ ${fmtPreco(prod.tamanhos[0].preco)}</span></div>
         <div class="price-line"><span>35 cm</span><span>R$ ${fmtPreco(prod.tamanhos[1].preco)}</span></div>
+      </div>
+    `;
+  } else if (prod.tamanhos.length > 1) {
+    precosHtml = `
+      <div class="prod-prices">
+        ${prod.tamanhos.map(tam => `
+          <div class="price-line">
+            <span>${tam.label}</span>
+            <span>R$ ${fmtPreco(tam.preco)}</span>
+          </div>
+        `).join('')}
       </div>
     `;
   } else {
@@ -152,7 +163,7 @@ function renderModalProduto() {
     `;
   }
 
-  html += `<div class="ms-half-title">Escolha o tamanho</div>`;
+  html += `<div class="ms-half-title">Escolha a opção</div>`;
   html += `<div class="ms-sizes">`;
 
   modalProduto.tamanhos.forEach((tam, idx) => {
@@ -251,7 +262,7 @@ function selecionarMetade(num, id) {
 
 function confirmarAdicao() {
   if (!modalProduto || modalTamanhoIdx === null) {
-    alerta('Escolha o tamanho.');
+    alerta('Escolha a opção.');
     return;
   }
 
@@ -269,7 +280,7 @@ function confirmarAdicao() {
   } else {
     carrinho.push({
       chave,
-      tipoItem: 'inteira',
+      tipoItem: prodAceitaMeioOuVariacao(modalProduto),
       prodId  : modalProduto.id,
       nome    : modalProduto.nome,
       tamanho : tam.label,
@@ -281,6 +292,10 @@ function confirmarAdicao() {
   fecharOverlay('overlaySize');
   atualizarCarrinhoUI();
   flashCartBar();
+}
+
+function prodAceitaMeioOuVariacao(prod) {
+  return prod.aceitaMeio ? 'inteira' : 'variacao';
 }
 
 function adicionarMeioAMeio() {
